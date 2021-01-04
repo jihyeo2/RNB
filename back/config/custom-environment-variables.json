@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "danbi_jwtPrivateKey",
+  "db": "danbi_db"
+}

@@ -1,0 +1,23 @@
+export default {
+  primary: "seagreen",
+  secondary: "chocolate",
+  third: "gold",
+  bananamilk: "#fffbbc",
+  black: "#000",
+  white: "#fff",
+  medium: "#6e6969",
+  light: "#f8f4f4",
+  dark: "#0c0c0c",
+  danger: "#ff5252",
+  lightgrey: "#f7f7f7",
+  grey: "#d1d1d1",
+  blue: "#0091ff",
+  red: "#e00047",
+  lightred: "#ffa6a6",
+  whiteblue: "#e6ffff",
+  lightgreen: "#a4ff94",
+  green: "#0fb000",
+  lightblue: "#8accff",
+  wood: "#dcd0c3",
+  darkwood: "#8f755a"
+};

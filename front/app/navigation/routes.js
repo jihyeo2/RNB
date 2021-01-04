@@ -1,0 +1,16 @@
+export default Object.freeze({
+  ADMIN: "Admin",
+  CUSTOMER: "Customer",
+  ACCOUNT: "Account",
+  MYACCOUNT: "MyAccount",
+  ACCOUNTEDIT: "AccountEdit",
+  MESSAGES: "Messages",
+  APPOINTMENTS: "Appointments",
+  ADDAPPOINTMENTS: "AddAppointments",
+  ORDERS: "Orders",
+  ADDORDERS: "AddOrders",
+  VIEWORDERS: "ViewOrders",
+  AUTH: "Auth",
+  LOGIN: "Login",
+  REGISTER: "Register",
+});

@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Danbi",
+    "slug": "Danbi",
+    "privacy": "unlisted",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "splash": {
+      "image": "./app/assets/Dopening.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#e8f4e6"
+    },
+    "icon": "./app/assets/dicon.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.umum2006.donewithit",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.umum2006.donewithit",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./app/assets/Dopening.png"
+    },
+    "description": "None",
+    "notification": {
+      "iosDisplayInForeground": true
+    },
+    "extra": {
+      "bugsnag": {
+        "apiKey": "0a92209f7e02337878d6b535f4aaeb14"
+      }
+    },
+    "hooks": {
+      "postPublish": []
+    }
+  }
+}
