@@ -1,5 +1,5 @@
 {
-  "assetsBaseUrl": "https://de-tout.herokuapp.com/assets/",
+  "assetsBaseUrl": "https://git.heroku.com/danbi7.git/assets/",
   "port": 9000,
   "jwtPrivateKey": "",
   "db": "mongodb://localhost/danbi"
