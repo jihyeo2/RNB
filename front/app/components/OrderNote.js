@@ -18,6 +18,7 @@ function OrderNote({order, onPress}) {
   const name = order.customer.name;
   const phone = order.customer.phone;
   const address = order.customer.address;
+  const status = order.status;
   const method = order.method;
 
   const [touched, setTouched] = useState(false);
@@ -49,8 +50,8 @@ function OrderNote({order, onPress}) {
       );
     };
 
-  const [confirmed, setConfirmed] = useState(false);
-  const [delivered, setDelivered] = useState(false);
+  const [confirmed, setConfirmed] = useState(status == "확인 완료" || status == "픽업/ 배달 가능");
+  const [delivered, setDelivered] = useState(status == "픽업/ 배달 가능");
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {handleUpdate()}, [confirmed, delivered]);
 
@@ -67,16 +68,14 @@ function OrderNote({order, onPress}) {
         { cancelable: true, onDismiss: () => {} }
         );
     } else {
-      let status = "승인대기";
+      let state = "승인대기";
       if (delivered && confirmed) {
-        status = "픽업/ 배달 가능";
+        state = "픽업/ 배달 가능";
         setDisabled(true);
       } else if (confirmed) {
-        status = "확인완료";
-      } else {
-        status = "승인대기";
-      }
-      const response = await updateOrdersApi.request(authToken, {...order, status: status});
+        state = "확인완료";
+      } 
+      const response = await updateOrdersApi.request(authToken, {...order, status: state});
       onPress();
     }
   };
@@ -119,7 +118,7 @@ function OrderNote({order, onPress}) {
             </View>
             <View style={{alignItems: "flex-end", justifyContent: "center"}}>
               <View style={{flexDirection: "row", marginVertical: 8}}>
-                <AppText style={{fontSize: 11}}>확인</AppText>
+                <AppText style={{fontSize: 11}}>확인 완료</AppText>
                 <Switch
                   trackColor={{ false: colors.grey, true: colors.lightred }}
                   thumbColor={confirmed ? colors.red : colors.white}
