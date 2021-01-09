@@ -6,22 +6,22 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "splash": {
-      "image": "./app/assets/Dopening.png",
+      "image": "./app/assets/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#e8f4e6"
     },
-    "icon": "./app/assets/dicon.png",
+    "icon": "./app/assets/realicon2.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.umum2006.donewithit",
+      "bundleIdentifier": "com.umum2006.danbi",
       "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.umum2006.donewithit",
+      "package": "com.umum2006.danbi",
       "versionCode": 1
     },
     "web": {

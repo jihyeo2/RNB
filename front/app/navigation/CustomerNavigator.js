@@ -16,16 +16,17 @@ const CustomerNavigator = () => {
       tabBarOptions={{style: {height: 55, }}}
     >
         <Tab.Screen
-        name="Orders"
+        name="주문"
         component={OrdersNavigator}
         options={{
             tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons name="store" size={size} color={color} />
-            )}
+            ),
+          }
           }
         />
         <Tab.Screen
-        name="Account"
+        name="프로필"
         component={AccountNavigator}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -34,7 +35,7 @@ const CustomerNavigator = () => {
         }
         />
         <Tab.Screen
-        name="Appointments"
+        name="예약"
         component={AppointmentsNavigator}
         options={{
             tabBarIcon: ({ size, color }) => (

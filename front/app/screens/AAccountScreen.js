@@ -21,7 +21,7 @@ import ListItemSeparator from "../components/lists/ListItemSeparator";
 
 
 function AAccountScreen({ navigation }) {
-
+  const isVisible = useIsFocused();
   const token = authStorage.getToken();
   const getUserApi = useApi(userApi.show);
   const getOrdersApi = useApi(orderApi.getOrders);
@@ -32,36 +32,40 @@ function AAccountScreen({ navigation }) {
 
   useEffect(() => {
     async function fetchData() {
-      const {data} = await getUserApi.request(token);
-      const response = await getOrdersApi.request(token);
-      setStatus(response.data[0].customer.name + " 님");
+      const response = await getUserApi.request(token);
+      const { data } = await getOrdersApi.request(token);
+      if (data.length == 0) {
+        setStatus("-");
+      } else {
+        setStatus(data[0].customer.name + " 님");
+      }
     }
     fetchData();
-  }, []);
+  }, [isVisible]);
 
-  const handlePress = async() => {
+  const handlePress = async () => {
     const response = deleteUserApi.request(token);
     logOut();
   };
 
   return (
     <Screen style={styles.screen}>
-      <Image style={styles.header}source={require("../assets/plant7.jpg")}/>
+      <Image style={styles.header} source={require("../assets/plant7.jpg")} />
       <View style={styles.container}>
         <AppText style={styles.title}>DANBI</AppText>
         <AppText style={styles.subtitle}>Love Nature, Study Nature.</AppText>
         <View style={styles.blackboard}>
-          <AppText style={{fontSize: 17, fontWeight: "bold"}}>"{getUserApi.data.name}"님의</AppText>
-          <View style={{marginVertical: 10, alignItems: "center"}}>
+          <AppText style={{ fontSize: 17, fontWeight: "bold" }}>"{getUserApi.data.name}"님의</AppText>
+          <View style={{ marginVertical: 10, alignItems: "center" }}>
             <View style={styles.scoreboard}>
-              <View style={{alignItems: "center", justifyContent: "space-evenly"}}>
-               <AppText style={{fontSize: 12}}>최근 주문</AppText>
-               <AppText style={{fontSize: 14, color: colors.blue}}>{status}</AppText> 
+              <View style={{ alignItems: "center", justifyContent: "space-evenly" }}>
+                <AppText style={{ fontSize: 12 }}>최근 주문</AppText>
+                <AppText style={{ fontSize: 14, color: colors.blue }}>{status}</AppText>
               </View>
               <View style={styles.separator}></View>
-              <View style={{alignItems: "center", justifyContent: "space-evenly"}}>
-                <AppText style={{fontSize: 12}}>다음 예약</AppText>
-                <AppText style={{fontSize: 16, color: colors.blue}}>-</AppText>
+              <View style={{ alignItems: "center", justifyContent: "space-evenly" }}>
+                <AppText style={{ fontSize: 12 }}>다음 예약</AppText>
+                <AppText style={{ fontSize: 16, color: colors.blue }}>-</AppText>
               </View>
             </View>
           </View>
@@ -72,6 +76,16 @@ function AAccountScreen({ navigation }) {
             showChevrons
             onPress={() =>
               navigation.navigate(routes.ACCOUNTEDIT, getUserApi.data)
+            }
+          />
+
+          <ListItemSeparator />
+
+          <ListItem
+            title="알림 설정"
+            showChevrons
+            onPress={() =>
+              navigation.navigate(routes.SETNOTIFICATION, getUserApi.data)
             }
           />
 
@@ -109,7 +123,7 @@ const styles = StyleSheet.create({
     height: "8%",
     marginLeft: "3%",
     marginVertical: "3%"
-  },  
+  },
   title: {
     fontSize: 30,
     fontWeight: "bold",
@@ -117,7 +131,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 15,
-    marginLeft:"5%"
+    marginLeft: "5%"
   },
   blackboard: {
     marginVertical: "9%",

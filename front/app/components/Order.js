@@ -19,7 +19,6 @@ function Order({onChangeOrder}) {
   });
   
   const handleAdd = async (order, { resetForm }) => {
-    console.log("order.js: ", order);
     if (order.label != "물품을 골라주세요") {
       onChangeOrder(order);
       resetForm();

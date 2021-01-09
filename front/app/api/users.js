@@ -6,14 +6,18 @@ const show = (authToken) =>
 const register = (userInfo) => 
   client.post("/users", userInfo);
 
-const edit = (authToken, userInfo, onUploadProgress) =>
+const edit = (authToken, userInfo) =>
   client.put("/users/me", userInfo, {
-    headers: { "x-auth-token": authToken },
-    onUploadProgress: (progress) =>
-      onUploadProgress(progress.loaded / progress.total),
+    headers: { "x-auth-token": authToken }
   });
+
+const editNotification = (authToken, userInfo) =>
+client.put("/users/notification", userInfo, {
+  headers: { "x-auth-token": authToken }
+});
+
 const remove = (authToken) =>
   client.delete("/users/me", {}, { headers: { "x-auth-token": authToken } });
 
 
-export default { register, show, edit, remove };
+export default { register, show, edit, editNotification, remove };

@@ -33,7 +33,11 @@ function AccountScreen({ navigation }) {
 
   const fetchData = async() => {
     const {data} = await getUserApi.request(token);
-    setStatus(data.orders.reverse()[0].status);
+    if (data.orders.length == 0) {
+      setStatus("-");
+    } else {
+      setStatus(data.orders.reverse()[0].status);
+    }
   };
 
   useEffect(() => {

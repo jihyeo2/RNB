@@ -21,15 +21,15 @@ import colors from "../config/colors";
 
 function AccountEditScreen({ navigation, route }) {
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required().min(3).max(50).label("Name"),
-    phone: Yup.string().required().min(1).max(20).label("Phone Number"),
-    address: Yup.string().required().min(1).max(500).label("Address"),
+    name: Yup.string().label("성함").test('isname', '이름은 최소 2자리여야 합니다.', (value) => value && value.length > 1),
+    phone: Yup.string().label("전화번호").test('isnumber', '전화번호는 9-11자리여야 합니다.', (value) => value && value.length > 8 && value.length < 12),
+    address: Yup.string().label("주소").test('isaddress', '주소를 입력하셔야 합니다.', (value) => value),
     currentPassword: Yup.string()
-      .required()
-      .min(5)
-      .max(1024)
-      .label("Current Password"),
-    password: Yup.string().required().min(5).max(1024).label("New Password"),
+      .label("Current Password").
+      test('ispassword', '비밀번호는 최소 6자리여야 합니다.', (value) => value && value.length > 5),
+    password: Yup.string().
+      label("New Password").
+      test('ispassword', '비밀번호는 최소 6자리여야 합니다.', (value) => value && value.length > 5),
   });
 
   const user = route.params;
@@ -45,12 +45,8 @@ function AccountEditScreen({ navigation, route }) {
 
   const handleSubmit = async (userInfo, {resetForm}) => {
 
-    console.log(userInfo);
-    const result = await editUserApi.request(token, {...userInfo, isAdmin: user.isAdmin}, (progress) =>
-      setProgress(progress)
-    );
+    const result = await editUserApi.request(token, {...userInfo, isAdmin: user.isAdmin, notification: user.notification});
 
-    console.log(result);
     if (!result.ok) {
       // setUploadVisible(false);
       return alert("프로필을 정상적으로 변경할 수 없습니다. 현 비밀번호를 정확히 입력하셨나 부탁드립니다.");
@@ -81,11 +77,11 @@ function AccountEditScreen({ navigation, route }) {
           <View>
             <AppText style={styles.title}>프로필 수정</AppText>
             <AppText style={{fontSize: 13, color: colors.darkwood, fontWeight: "bold"}}>성함</AppText>
-            <FormField name="name" bottomline textInputStyle={{marginBottom: 2, fontSize: 16}} linecolor={colors.darkwood}></FormField>
+            <FormField name="name" bottomline textInputStyle={{marginBottom: 2, fontSize: 16}} linecolor={colors.darkwood} placeholder="성함 입력"></FormField>
             <AppText style={{fontSize: 13, marginTop: 5, color: colors.darkwood, fontWeight: "bold"}}>전화번호</AppText>
-            <FormField name="phone" bottomline textInputStyle={{marginBottom: 2, fontSize: 16}} linecolor={colors.darkwood}></FormField>
+            <FormField name="phone" bottomline textInputStyle={{marginBottom: 2, fontSize: 16}} linecolor={colors.darkwood} placeholder="전화번호 (-)없이 숫자만 입력"></FormField>
             <AppText style={{fontSize: 13, marginTop: 5, color: colors.darkwood, fontWeight: "bold"}}>주소</AppText>
-            <FormField name="address" bottomline textInputStyle={{marginBottom: 2, fontSize: 16}} linecolor={colors.darkwood}></FormField>
+            <FormField name="address" bottomline textInputStyle={{marginBottom: 2, fontSize: 16}} linecolor={colors.darkwood} placeholder="주소 입력"></FormField>
           </View>
 
           <AppText style={{fontSize: 13, marginTop: 5, color: colors.darkwood, fontWeight: "bold"}}>비밀번호</AppText>
@@ -96,7 +92,7 @@ function AccountEditScreen({ navigation, route }) {
               autoCapitalize="none"
               autoCorrect={false}
               secureTextEntry
-              placeholder="현재 비밀번호"
+              placeholder="현재 비밀번호 입력"
               textContentType="password"
               textInputStyle={{marginBottom: 1, fontSize: 16}}
               linecolor={colors.darkwood}
@@ -107,7 +103,7 @@ function AccountEditScreen({ navigation, route }) {
               autoCapitalize="none"
               autoCorrect={false}
               secureTextEntry
-              placeholder="새 비밀번호"
+              placeholder="새 비밀번호 입력"
               textContentType="password"
               textInputStyle={{marginBottom: 3, fontSize: 16}}
               linecolor={colors.darkwood}

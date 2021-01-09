@@ -15,7 +15,7 @@ const AdminNavigator = () => {
   return (
     <Tab.Navigator>
         <Tab.Screen
-        name="주문 내역"
+        name="주문"
         component={ViewOrdersScreen}
         options={{
             tabBarIcon: ({ size, color }) => (
@@ -24,7 +24,7 @@ const AdminNavigator = () => {
         }}
         />
         <Tab.Screen
-        name="Account"
+        name="프로필"
         component={AccountNavigator}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -33,7 +33,7 @@ const AdminNavigator = () => {
         }
         />
         <Tab.Screen
-        name="Appointments"
+        name="예약"
         component={ViewAppointmentsScreen}
         options={{
             tabBarIcon: ({ size, color }) => (

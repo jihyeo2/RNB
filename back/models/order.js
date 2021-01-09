@@ -28,8 +28,8 @@ const orderSchema = new mongoose.Schema({
       phone: {
         type: String,
         required: true,
-        minlength: 1,
-        maxlength: 20,
+        minlength: 9,
+        maxlength: 11,
       },
       address: {
         type: String,

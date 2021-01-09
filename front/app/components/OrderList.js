@@ -1,7 +1,9 @@
-import React, {useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { useFormikContext } from "formik";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import rootNavigation from "../navigation/rootNavigation";
+import routes from "../navigation/routes";
 
 
 import Order from "./Order";
@@ -10,29 +12,34 @@ import AppText from "./AppText";
 import CachedOrder from "../components/CachedOrder";
 import colors from "../config/colors";
 
-function OrderList({ name }) {
+function OrderList({ name, onInitial }) {
   const { setFieldValue, errors, touched, values } = useFormikContext();
   const orders = values[name];
   const scrollView = useRef();
 
   const handleAdd = (order) => {
-    setFieldValue(name, [...orders, order]);
-    // alert("You saved the order");
+    if (orders) {
+      setFieldValue(name, [...orders, order]);
+    } else {
+      setFieldValue(name, [order]);
+    }
   };
 
   const handleRemove = (order) => {
-    setFieldValue(
-      name,
-      orders.filter((orderItem) => orderItem !== order)
-    );
+      setFieldValue(
+        name,
+        orders.filter((orderItem) => orderItem !== order)
+      );
   };
+
+
 
   return (
     <>
       <ScrollView
       >
         <Order onChangeOrder={(order) => handleAdd(order)} />
-        <View style={styles.list}>
+        <View>
           <View style={{backgroundColor: colors.white, flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingVertical: 5}}>
             <MaterialCommunityIcons name="format-list-bulleted" size={20} color={colors.black} /> 
             <AppText style={styles.title}>리스트</AppText>
@@ -42,7 +49,7 @@ function OrderList({ name }) {
               ref={scrollView} 
               onContentSizeChange={() => scrollView.current.scrollToEnd()}
             >
-              {orders.map((order) => (
+              {orders && orders.map((order) => (
                 <>
                   <View key={order._id}>
                   <CachedOrder

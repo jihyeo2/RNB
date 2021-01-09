@@ -12,6 +12,7 @@ import {
 } from "../components/forms";
 import useAuth from "../auth/useAuth";
 import usersApi from "../api/users";
+import ordersApi from "../api/orders";
 import authApi from "../api/auth";
 import ActivityIndicator from "../components/ActivityIndicator";
 import useApi from "../hooks/useApi";
@@ -21,22 +22,21 @@ import colors from "../config/colors";
 
 function RegisterScreen(props) {
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required().min(3).max(50).label("성함"),
-    phone: Yup.string().required().min(1).max(20).label("전화번호"),
-    address: Yup.string().required().min(1).max(500).label("주소"),
-    password: Yup.string().required().min(5).max(1024).label("비밀번호"),
+    name: Yup.string().label("성함").test('isname', '이름은 최소 2자리여야 합니다.', (value) => value && value.length > 1),
+    phone: Yup.string().label("전화번호").test('isnumber', '전화번호는 9-11자리여야 합니다.', (value) => value && value.length > 8 && value.length < 12),
+    address: Yup.string().label("주소").test('isaddress', '주소를 입력하셔야 합니다.', (value) => value),
+    password: Yup.string().label("비밀번호").test('ispassword', '비밀번호는 최소 6자리여야 합니다.', (value) => value && value.length > 5),
   });
   const registerApi = useApi(usersApi.register);
   const loginApi = useApi(authApi.login);
+  const checkApi = useApi(ordersApi.getByCustomer);
+  const check1Api = useApi(ordersApi.getOrders);
   const auth = useAuth();
   const [error, setError] = useState();
   const [registerFailed, setRegisterFailed] = useState(false);
 
   const handleSubmit = async (userInfo) => {
-    console.log("RegisterScreen: ", userInfo);
     const result = await registerApi.request(userInfo);
-
-    console.log("RegisterScreen: ", result);
 
     if (!result.ok) {
       if (result.data) {
@@ -54,6 +54,11 @@ function RegisterScreen(props) {
       userInfo.phone,
       userInfo.password
     );
+
+    const response = await checkApi.request(authToken);
+    const response1 = await check1Api.request(authToken);
+
+
     auth.logIn(authToken);
   };
 
@@ -74,13 +79,14 @@ function RegisterScreen(props) {
                 phone: "",
                 address: "",
                 password: "",
-                isAdmin: false
+                isAdmin: false,
+                notification: true
               }}
               onSubmit={handleSubmit}
               validationSchema={validationSchema}
             >
               <FormField name="name" placeholder="성함 입력" bottomline textInputStyle={{marginBottom: 3, fontSize: 16}} linecolor={colors.darkwood} borderColor={colors.wood}></FormField>
-              <FormField name="phone" placeholder="전화번호 입력" autoCorrect={false} keyboardType="numeric" bottomline textInputStyle={{marginBottom: 3, fontSize: 16}} linecolor={colors.darkwood} borderColor={colors.wood}></FormField>
+              <FormField name="phone" placeholder="전화번호 (-)없이 숫자만 입력" autoCorrect={false} keyboardType="numeric" bottomline textInputStyle={{marginBottom: 3, fontSize: 16}} linecolor={colors.darkwood} borderColor={colors.wood}></FormField>
               <FormField name="address" placeholder="주소 입력" bottomline textInputStyle={{marginBottom: 3, fontSize: 16}} linecolor={colors.darkwood} borderColor={colors.wood}></FormField>
               <AppText style={{color: "red", fontSize: 14, marginBottom: "15%"}}>⚠ 여기에 작성하신 전화번호와 주소로 연락과 배송이 되기 때문에 정확히 기재해주시길 바랍니다.</AppText>
               <FormField

@@ -11,19 +11,21 @@ import {
 import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
-import AppButton from "../components/AppButton";
+import ordersApi from "../api/orders";
 import routes from "../navigation/routes";
 import colors from "../config/colors";
 import AppText from "../components/AppText";
 
 const validationSchema = Yup.object().shape({ 
-  phone: Yup.string().required().min(1).max(20).label("Phone Number without dashes(-)"),
-  password: Yup.string().required().min(4).label("Password"),
+  phone: Yup.string().label("전화번호 (-)없이 숫자만").test('isnumber', '전화번호는 9-11자리여야 합니다.', (value) => value && value.length > 8 && value.length < 12),
+  password: Yup.string().label("비밀번호").test('ispassword', '비밀번호는 최소 6자리여야 합니다.', (value) => value && value.length > 5),
 });
 
 function LoginScreen({navigation}) {
   const auth = useAuth();
   const loginApi = useApi(authApi.login);
+  const checkApi = useApi(ordersApi.getByCustomer);
+  const check1Api = useApi(ordersApi.getOrders);
 
   const [error, setError] = useState();
   const [loginFailed, setLoginFailed] = useState(false);
@@ -42,6 +44,11 @@ function LoginScreen({navigation}) {
       setLoginFailed(true);
       return;
     }
+
+    const response = await checkApi.request(result.data);
+    const response1 = await check1Api.request(result.data);
+
+    
     auth.logIn(result.data);
   };
 
@@ -71,7 +78,7 @@ function LoginScreen({navigation}) {
                 icon="phone"
                 keyboardType="numeric"
                 name="phone"
-                placeholder="전화번호"
+                placeholder="전화번호 (-)없이 숫자만"
               />
               <AppFormField
                 textInputStyle={{

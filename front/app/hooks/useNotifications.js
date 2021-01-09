@@ -1,10 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
-import {Text, View, Button, Platform} from 'react-native';
+import React, { useContext, useState, useRef, useEffect } from "react";
+import {Platform} from 'react-native';
+import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 import expoPushTokensApi from "../api/expoPushTokens";
 import useApi from "./useApi";
 import authStorage from "../auth/storage";
+import * as rootNavigation from "../navigation/rootNavigation";
+import AuthContext from "../auth/context";
+import routes from "../navigation/routes";
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -20,16 +25,21 @@ const useNotifications = () => {
   const notificationListener = useRef();
   const responseListener = useRef();
   const pushTokenApi = useApi(expoPushTokensApi.register);
+  const { user } = useContext(AuthContext);
   
   useEffect(() => {
     registerforPushNotifications();
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
+      console.log(notification, " ", notification.request.content);
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+      if (user && user.isAdmin) {
+        rootNavigation.navigate(routes.ORDERS);
+      } else if (user && !user.isAdmin) {
+        rootNavigation.navigate(routes.VIEWORDERS);
+      }
     });
 
     return () => {
@@ -40,39 +50,46 @@ const useNotifications = () => {
   }, []);
 
   const registerforPushNotifications = async () => {
-    console.log("registered for noticiations");
-    try {
-    //   const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    //   if (!permission.granted) return;
-    //   console.log("yes permission");
-    //   const token = await Notifications.getExpoPushTokenAsync();
-      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
-      if (Platform.OS === 'android') {
-        Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF231F7C',
-        });
-      }
-      console.log("token ", token);
+    if (Constants.isDevice) {
+      try {
+        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+          alert('Failed to get push token for push notification!');
+          return;
+        }
+        const token = (await Notifications.getExpoPushTokenAsync()).data;
+        const authToken = authStorage.getToken();
+        const response = await pushTokenApi.request(token, authToken);
 
-      const authToken = authStorage.getToken();
-      const response = await pushTokenApi.request(token, authToken);
-      console.log("expopushtoken registeresd", response.data);
-    } catch (error) {
-      console.log("Error getting a push token", token);
-    }
+        console.log("final result: ", token, " & ", authToken);
+
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            priority: 'max',
+            sound: true,
+            lightColor: '#FF231F7C',
+          });
+          Notifications.setNotificationChannelAsync('off', {
+            name: 'off',
+            importance: Notifications.AndroidImportance.MAX,
+            priority: 'max',
+            sound: false,
+            lightColor: '#FF231F7C',
+          });
+        }
+      } catch (error) {
+        console.log("Error getting a push token");
+      }
+    } 
+
   };
 };
 

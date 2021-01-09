@@ -17,13 +17,7 @@ const edit = (authToken, order) => {
     headers: { "x-auth-token": authToken }
   });
 };
-// const edit = (authToken, order , onUploadProgress) => {
-//   return client.put(`/orders`, order, {
-//     headers: { "x-auth-token": authToken },
-//     onUploadProgress: (progress) =>
-//       onUploadProgress(progress.loaded / progress.total),
-//   });
-// };
+
 
 const remove = (authToken, id) =>
   client.delete(

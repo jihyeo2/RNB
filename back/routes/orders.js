@@ -35,10 +35,8 @@ router.get("/customer", auth, async (req, res) => {
     "/",
     auth,
     async (req, res) => {
-      console.log("orders_r: passed order data ", req.body);
       const { error } = validate(req.body);
       if (error) return res.status(400).send(error.details[0].message);
-      console.log("passed the validation");
       
       let order = await Order.findOne({timestamp: req.body.timestamp}); //TODO: later change to userId
       if (order) return res.status(400).send("Order already registered.");
@@ -74,12 +72,10 @@ router.get("/customer", auth, async (req, res) => {
 
   //get for admin (no filter)
   router.post("/search", auth, ownerAdmin, async (req, res) => {
-    console.log("orders_r/search: ", req.body);
     let orders = null;
     switch (req.body.num) {
       case 0:
         orders = await Order.find({ "customer.name": req.body.value}).sort({timestamp: -1});
-        console.log("orders_r/search/0: ", orders);
         if (!orders) return res.status.send(400).send("None exists.");
         break;
       case 1:
@@ -87,7 +83,7 @@ router.get("/customer", auth, async (req, res) => {
         if (!orders) return res.status.send(400).send("None exists.");
         break;
       case 2:
-        orders = await Order.find({timestamp: { $gte: parseInt(req.body.timestamp) - 86400000}}).sort({timestamp: -1});
+        orders = await Order.find({$and: [{timestamp: { $gte: ((parseInt(req.body.timestamp) - parseInt(req.body.timestamp) % 86400000) - 32400000 + 86400000)}}, {timestamp: { $lt: ((parseInt(req.body.timestamp) - parseInt(req.body.timestamp) % 86400000) - 32400000 + 86400000 * 2)}}]}).sort({timestamp: -1});
         if (!orders) return res.status.send(400).send("None exists.");
         break;
       default:
@@ -102,7 +98,7 @@ router.get("/customer", auth, async (req, res) => {
   all values that have not changed should also be passed. If not passed, an error rises
   */
  
- router.put("/", auth, ownerAdmin, async (req, res) => {
+ router.put("/", auth, async (req, res) => {
    // const { error } = validate(req.body);
    // if (error) return res.status(400).send(error.details[0].message);
    

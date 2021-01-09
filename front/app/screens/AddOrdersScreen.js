@@ -42,7 +42,6 @@ function AddOrdersScreen({ navigation }) {
   }, [isVisible]);
 
   const handleSubmit = async (listing, {resetForm}) => {
-    console.log("addordersscreen: ", listing);
     if (listing.items.length == 0) {
       Alert.alert(
         "주의",
@@ -63,7 +62,6 @@ function AddOrdersScreen({ navigation }) {
           items: listing.items
         }
       );
-      console.log(response);
       if (!response.ok) {
         return alert("주문이 실패했습니다.");
       }
@@ -71,9 +69,11 @@ function AddOrdersScreen({ navigation }) {
       let string = "주문물품: ";      
       listing.items.forEach(item => string += (item.label +" "+ item.count+ "개, "));
       const result = await ringApi.request({
-        title: userName + "님이 주문하셨습니다!",
+        recipient: "admin",
+        message: {
+        title: userName + "님",
         body: string.substring(0, string.length - 2),
-      });
+      }});
       resetForm();
       navigation.navigate(routes.ORDERS);
     }
@@ -81,7 +81,7 @@ function AddOrdersScreen({ navigation }) {
   };
 
   return (
-    <View style={{backgroundColor: colors.lightgrey, flex: 1}}>
+    <View style={{backgroundColor: colors.lightgrey, flex: 1,}}>
       <View style={{backgroundColor: colors.white, flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingVertical: 5}}>
         <MaterialCommunityIcons name="cart" size={20} color={colors.black} /> 
         <AppText style={styles.title}>물품과 수량 선택</AppText>
@@ -95,7 +95,7 @@ function AddOrdersScreen({ navigation }) {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          <OrderList name="items" />
+          <OrderList name="items"/>
           <View>
             <View style={{flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingVertical: 5, backgroundColor: colors.white}}>
               <MaterialCommunityIcons name="truck-fast" size={20} color={colors.black} /> 

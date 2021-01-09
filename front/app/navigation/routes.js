@@ -4,6 +4,7 @@ export default Object.freeze({
   ACCOUNT: "Account",
   MYACCOUNT: "MyAccount",
   ACCOUNTEDIT: "AccountEdit",
+  SETNOTIFICATION: "SetNotification",
   MESSAGES: "Messages",
   APPOINTMENTS: "Appointments",
   ADDAPPOINTMENTS: "AddAppointments",

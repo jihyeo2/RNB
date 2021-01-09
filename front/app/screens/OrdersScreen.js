@@ -15,19 +15,32 @@ import authStorage from "../auth/storage";
 import Customernote from "../components/Customernote";
 
 function OrdersScreen({navigation}) {
+  const token = authStorage.getToken();
+  const getUserApi = useApi(usersApi.show);
+  const editUserApi = useApi(usersApi.editNotification);
 
   const [notification, setNotification] = useState(true);
-  
+  let user = {};
+
+  const handleNotification = async() => {
+    const response = await editUserApi.request(token, {...user, notification: !notification});
+    setNotification(!notification);
+  };
+
   useLayoutEffect(() => {
     loadHeader();
   }, [notification]);
 
-  const loadHeader = () => {
+  const loadHeader = async() => {
+    const {data} = await getUserApi.request(token);
+    if (data) {
+      user = data;
+    }
+    setNotification(data.notification);
+
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={{marginHorizontal: 20}} onPress={() => {
-          setNotification(!notification);
-        }}>
+        <TouchableOpacity style={{marginHorizontal: 20}} onPress={handleNotification}>
          {notification? 
             <MaterialIcons name="notifications" size={25} />
           :
@@ -47,15 +60,16 @@ function OrdersScreen({navigation}) {
 
 
   const isVisible = useIsFocused();
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const token = authStorage.getToken();
-  const getUserApi = useApi(usersApi.show);
+
   const getOrdersApi = useApi(ordersApi.getByCustomer);
 
   const loadData = async() => {
     const {data} = await getOrdersApi.request(token);
     setData(data);
+    setLoading(false);
   };
 
   useEffect (() => {
@@ -70,25 +84,6 @@ function OrdersScreen({navigation}) {
   return (
     <>
     <ActivityIndicator visible={getOrdersApi.loading}/>
-    <View style={styles.container}>
-      {(data.length != 0) ? (
-          <ScrollView>
-            {data.map(order => 
-              {return (<Customernote 
-                        id={order._id} 
-                        time={order.timestamp} 
-                        status={order.status} 
-                        method={order.method}
-                        items={order.items}
-                        onPress={handlePress}
-                        />)})}
-          </ScrollView>
-        ) : (
-        <AppText style={{ color: colors.medium, alignSelf: "center" }}>
-          No orders yet!
-        </AppText>     
-      )}
-    </View>
     <TouchableOpacity
           style={styles.edit}
           onPress={() => navigation.navigate(routes.ADDORDERS)}
@@ -99,8 +94,29 @@ function OrdersScreen({navigation}) {
             backgroundColor={colors.primary}
           />
     </TouchableOpacity>
+    <View style={styles.container}>
+      {(!loading && data.length != 0) ? (
+          <ScrollView>
+            {!loading && data.map(order => 
+              {return (<Customernote 
+                        order={order}
+                        id={order._id} 
+                        time={order.timestamp} 
+                        status={order.status} 
+                        method={order.method}
+                        items={order.items}
+                        onPress={handlePress}
+                        />)})}
+          </ScrollView>
+        ) : (
+        <AppText style={{ color: colors.medium, alignSelf: "center" }}>
+          첫 주문을 환영합니다!
+        </AppText>     
+      )}
+    </View>
   </>
   );
+
 }
 
 const styles = StyleSheet.create({

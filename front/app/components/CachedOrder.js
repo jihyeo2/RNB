@@ -9,7 +9,7 @@ import AppText from "./AppText";
 function CachedOrder({order, onChangeOrder}) {
   return (
   <View style={styles.container}>
-      <AppText style={styles.label}>{order.label}</AppText>
+      <AppText style={styles.label} numberOfLines={1}>{order.label}</AppText>
       <AppText style={styles.count}>{order.count}개</AppText>
       <TouchableHighlight style={styles.button} onPress={onChangeOrder}>
         <MaterialCommunityIcons name="close-box" size={30} color={colors.wood} /> 
@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
       backgroundColor: colors.white
   },
   label: {
-    fontSize: 15
+    fontSize: 15,
+    width: "60%"
   },
   count: {
     position: "absolute",

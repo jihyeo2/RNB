@@ -2,13 +2,13 @@ import Constants from "expo-constants";
 
 const settings = {
   dev: {
-    apiUrl: "https://git.heroku.com/danbi2021.git/api",
+    apiUrl: "https://danbi2021.herokuapp.com/api",
   },
   staging: {
-    apiUrl: "https://git.heroku.com/danbi2021.git/api",
+    apiUrl: "https://danbi2021.herokuapp.com/api",
   },
   prod: {
-    apiUrl: "https://git.heroku.com/danbi2021.git/api",
+    apiUrl: "https://danbi2021.herokuapp.com/api",
   },
 };
 

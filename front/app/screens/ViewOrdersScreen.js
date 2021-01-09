@@ -2,7 +2,6 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useIsFocused } from "@react-navigation/native";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
-import Constants from "expo-constants";
 
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
@@ -23,12 +22,15 @@ function ViewOrdersScreen(props) {
   const token = authStorage.getToken();
   const getOrdersApi = useApi(ordersApi.getOrders);
   const filteredOrdersApi = useApi(ordersApi.search);
-  let data = [];
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
   let fdata = [];
 
   const loadData = async() => {
-    const response = await getOrdersApi.request(token);
-    data = getOrdersApi.data;
+    const {data} = await getOrdersApi.request(token);
+    console.log("VOscreen: ", data);
+    setData(data);
+    setLoading(false);
   };
 
   useEffect (() => {
@@ -76,17 +78,17 @@ function ViewOrdersScreen(props) {
               </ScrollView>
             ) : (
               <ScrollView >
-                {getOrdersApi.data.map(order => 
+                {!loading && data.length != 0 && data.map(order => 
                   {return (<OrderNote 
                             order={order}
                             onPress={handlePress}
                             />)})}
               </ScrollView>
           )}
-          {getOrdersApi.data.length != 0? null :
+          {!loading && data.length != 0? null :
           <View style={styles.empty}>
             <AppText style={{ color: colors.medium, alignSelf: "center" }}>
-            No orders yet.
+            주문내역이 없습니다.
             </AppText>  
           </View>
           }
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
     },
     container: {
       backgroundColor: colors.wood,
+      justifyContent: "center"
     },
     title: {
       fontSize: 16,

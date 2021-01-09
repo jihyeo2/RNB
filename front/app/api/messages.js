@@ -5,7 +5,7 @@ import client from "./client";
 
 // const discard = (id) => client.delete(`/messages/${id}`);
 
-const post = (message) => client.post("/messages", message);
+const post = (mail) => client.post("/messages", mail);
 
 export default {
   // get,

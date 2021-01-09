@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    minlength: 1,
-    maxlength: 20,
+    minlength: 9,
+    maxlength: 11,
   },
   address: {
     type: String,
@@ -26,13 +26,13 @@ const userSchema = new mongoose.Schema({
   },
   currentPassword: {
     type: String,
-    minlength: 5,
+    minlength: 6,
     maxlength: 1024,
   },
   password: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 6,
     maxlength: 1024,
   },
   isAdmin: {
@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema({
   },
   orders: [orderSchema],
   expoPushToken: String,
+  notification: {
+    type: Boolean,
+    default: true,
+    required: true,
+  }
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -57,11 +62,12 @@ const User = mongoose.model("User", userSchema);
 function validateUser(user) {
   const schema = {
     name: Joi.string().required().min(2).max(30),
-    phone: Joi.string().required().min(1).max(20),
+    phone: Joi.string().required().min(9).max(11),
     address: Joi.string().required().min(1).max(500),
     // currentPassword: Joi.string().min(5).max(1024),
-    password: Joi.string().required().min(5).max(1024),
-    isAdmin: Joi.boolean().required()
+    password: Joi.string().required().min(6).max(1024),
+    isAdmin: Joi.boolean().required(),
+    notification: Joi.boolean().required()
   };
 
   return Joi.validate(user, schema);

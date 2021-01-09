@@ -24,7 +24,7 @@ function ViewAppointmentsScreen(props) {
     <Screen style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => {
-            setNotification(!notification);
+            // setNotification(!notification);
           }}>
             {notification? 
               <MaterialIcons name="notifications" size={25} />

@@ -16,7 +16,6 @@ router.get("/me", auth, async (req, res) => {
 router.post(
   "/",
   async (req, res) => {
-    console.log("users_r: ", req.body);
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -30,6 +29,7 @@ router.post(
         "address",
         "password",
         "isAdmin",
+        "notification",
         "expoPushToken",
       ])
     );
@@ -45,7 +45,6 @@ router.post(
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
-    console.log("users_r: final user data before adding in the stacks ", user);
     await user.save();
 
     const token = user.generateAuthToken();
@@ -85,6 +84,43 @@ router.put("/me", auth, async (req, res) => {
             address: req.body.address,
             password: new_password,
             isAdmin: req.body.isAdmin,
+            notification: req.body.notification,
+            expoPushToken: req.body.expoPushToken
+          },
+        },
+        { new: true }
+      )
+      .run();
+
+    res.send(_.pick(user, ["_id", "name", "phone"]));
+  } catch (ex) {
+    res
+      .status(500)
+      .send("Error occured, thus the user was not updated successfully.");
+  }
+});
+
+router.put("/notification", auth, async (req, res) => {
+  // const { error } = validate(req.body);
+  // if (error) return res.status(400).send(error.details[0].message);
+
+  const user = await User.findById(req.user._id);
+  if (!user)
+    return res.status(404).send("users_r: The user with the given ID was not found.");
+
+  try {
+    new Fawn.Task()
+      .update(
+        "users",
+        { _id: user._id },
+        {
+          $set: {
+            name: req.body.name,
+            phone: req.body.phone,
+            address: req.body.address,
+            password: req.body.password,
+            isAdmin: req.body.isAdmin,
+            notification: req.body.notification,
             expoPushToken: req.body.expoPushToken
           },
         },
