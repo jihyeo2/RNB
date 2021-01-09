@@ -22,7 +22,8 @@
     },
     "android": {
       "package": "com.umum2006.danbi",
-      "versionCode": 1
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./app/assets/Dopening.png"

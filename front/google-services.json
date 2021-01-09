@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "441039411312",
+    "project_id": "danbi-7ae5a",
+    "storage_bucket": "danbi-7ae5a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441039411312:android:a1a0e19cefa74cab02bcb5",
+        "android_client_info": {
+          "package_name": "com.umum2006.danbi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441039411312-ken60o2p0igtko4eqktph7kuo9jk8mga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZKwOez22W9vWHAtjSa81g4apQUKKNAxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441039411312-ken60o2p0igtko4eqktph7kuo9jk8mga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
